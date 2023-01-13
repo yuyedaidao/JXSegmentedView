@@ -98,6 +98,12 @@ public protocol JXSegmentedViewDataSource: AnyObject {
 
 /// 为什么会把选中代理分为三个，因为有时候只关心点击选中的，有时候只关心滚动选中的，有时候只关心选中。所以具体情况，使用对应方法。
 public protocol JXSegmentedViewDelegate: AnyObject {
+    /// 即将选中事件。适用于在变化之前做一些数据改动
+    ///
+    /// - Parameters:
+    ///   - segmentedView: JXSegmentedView
+    ///   - index: 选中的index
+    func segmentedView(_ segmentedView: JXSegmentedView, willSelectItemAt index: Int)
     /// 点击选中或者滚动选中都会调用该方法。适用于只关心选中事件，而不关心具体是点击还是滚动选中的情况。
     ///
     /// - Parameters:
@@ -139,6 +145,7 @@ public protocol JXSegmentedViewDelegate: AnyObject {
 
 /// 提供JXSegmentedViewDelegate的默认实现，这样对于遵从JXSegmentedViewDelegate的类来说，所有代理方法都是可选实现的。
 public extension JXSegmentedViewDelegate {
+    func segmentedView(_ segmentedView: JXSegmentedView, willSelectItemAt index: Int) { }
     func segmentedView(_ segmentedView: JXSegmentedView, didSelectedItemAt index: Int) { }
     func segmentedView(_ segmentedView: JXSegmentedView, didClickSelectedItemAt index: Int) { }
     func segmentedView(_ segmentedView: JXSegmentedView, didScrollSelectedItemAt index: Int) { }
@@ -537,7 +544,7 @@ open class JXSegmentedView: UIView, JXSegmentedViewRTLCompatible {
             scrollingTargetIndex = -1
             return
         }
-
+        delegate?.segmentedView(self, willSelectItemAt: index)
         let currentSelectedItemModel = itemDataSource[selectedIndex]
         let willSelectedItemModel = itemDataSource[index]
         dataSource?.refreshItemModel(self, currentSelectedItemModel: currentSelectedItemModel, willSelectedItemModel: willSelectedItemModel, selectedType: selectedType)
