@@ -287,7 +287,15 @@ open class JXSegmentedView: UIView, JXSegmentedViewRTLCompatible {
         }
         return cell as! JXSegmentedBaseCell
     }
-
+    /// 遍历数据源的数据model
+    /// MARK: 这是私下加的方法，其实完全破坏了原本的设计思路
+    open func refreshDataSourceItemModels(_ block: (JXSegmentedBaseItemModel) -> ()) {
+        guard let models = dataSource?.itemDataSource(in: self) else {return}
+        for model in models {
+            block(model)
+        }
+        itemDataSource = models
+     }
     open func reloadData() {
         reloadDataWithoutListContainer()
         listContainer?.reloadData()
