@@ -295,7 +295,7 @@ open class JXSegmentedView: UIView, JXSegmentedViewRTLCompatible {
             block(model)
         }
         itemDataSource = models
-     }
+    }
     open func reloadData() {
         reloadDataWithoutListContainer()
         listContainer?.reloadData()
