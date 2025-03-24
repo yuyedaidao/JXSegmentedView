@@ -10,6 +10,9 @@ import UIKit
 import JXSegmentedView
 
 class ContentBaseViewController: UIViewController {
+    var rowCount: Int {
+        segmentedDataSource?.rowCount ?? 1
+    }
     var segmentedDataSource: JXSegmentedBaseDataSource?
     let segmentedView = JXSegmentedView()
     lazy var listContainerView: JXSegmentedListContainerView! = {
@@ -67,9 +70,9 @@ class ContentBaseViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-
-        segmentedView.frame = CGRect(x: 0, y: 0, width: view.bounds.size.width, height: 50)
-        listContainerView.frame = CGRect(x: 0, y: 50, width: view.bounds.size.width, height: view.bounds.size.height - 50)
+        let height: CGFloat = 50 * CGFloat(rowCount)
+        segmentedView.frame = CGRect(x: 0, y: 0, width: view.bounds.size.width, height: height)
+        listContainerView.frame = CGRect(x: 0, y: height, width: view.bounds.size.width, height: view.bounds.size.height - height)
     }
 
     @objc func didSetingsButtonClicked() {

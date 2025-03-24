@@ -40,6 +40,7 @@ class CellCustomizeViewController: UITableViewController {
             dataSource.isTitleColorGradientEnabled = true
             dataSource.titleSelectedColor = UIColor.red
             dataSource.titles = titles
+            dataSource.rowCount = 2
             vc.segmentedDataSource = dataSource
         case "文字渐变":
             //配置数据源

@@ -20,6 +20,8 @@ open class JXSegmentedBaseDataSource: JXSegmentedViewDataSource {
     open var itemSpacing: CGFloat = 20
     /// 当collectionView.contentSize.width小于JXSegmentedView的宽度时，是否将itemSpacing均分。
     open var isItemSpacingAverageEnabled: Bool = true
+    /// item的行数
+    open var rowCount: Int = 1
     /// item左右滚动过渡时，是否允许渐变。比如JXSegmentedTitleDataSource的titleZoom、titleNormalColor、titleStrokeWidth等渐变。
     open var isItemTransitionEnabled: Bool = true
     /// 选中的时候，是否需要动画过渡。自定义的cell需要自己处理动画过渡逻辑，动画处理逻辑参考`JXSegmentedTitleCell`

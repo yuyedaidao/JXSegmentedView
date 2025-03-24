@@ -35,7 +35,8 @@ public protocol JXSegmentedViewDataSource: AnyObject {
     var selectedAnimationDuration: TimeInterval { get }
     var itemSpacing: CGFloat { get }
     var isItemSpacingAverageEnabled: Bool { get }
-
+    /// 标题有几行，注意如果多于1行，indicator将不会显示，单行的高度根据总高度平分
+    var rowCount: Int { get }
     func reloadData(selectedIndex: Int)
 
     /// 返回数据源数组，数组元素必须是JXSegmentedBaseItemModel及其子类
@@ -730,13 +731,14 @@ extension JXSegmentedView: UICollectionViewDelegateFlowLayout {
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.item >= 0, indexPath.item < itemDataSource.count {
-            return CGSize(width: itemDataSource[indexPath.item].itemWidth, height: collectionView.bounds.size.height)
+            let rowCount = dataSource?.rowCount ?? 1
+            return CGSize(width: itemDataSource[indexPath.item].itemWidth, height: rowCount > 1 ? collectionView.bounds.size.height / CGFloat(rowCount) : collectionView.bounds.size.height)
         } else {
             return .zero
         }
     }
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return innerItemSpacing
+        return 0
     }
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
