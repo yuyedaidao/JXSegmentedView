@@ -317,38 +317,36 @@ open class JXSegmentedView: UIView, JXSegmentedViewRTLCompatible {
         innerItemSpacing = dataSource?.itemSpacing ?? 0
         var totalItemWidth: CGFloat = 0
         var totalContentWidth: CGFloat = getContentEdgeInsetLeft()
-        if rowCount == 1 {
-            for (index, itemModel) in itemDataSource.enumerated() {
-                itemModel.index = index
-                itemModel.itemWidth = (dataSource?.segmentedView(self, widthForItemAt: index) ?? 0)
-                if dataSource?.isItemWidthZoomEnabled == true {
-                    itemModel.itemWidth *= itemModel.itemWidthCurrentZoomScale
-                }
-                itemModel.isSelected = (index == selectedIndex)
-                totalItemWidth += itemModel.itemWidth
-                if index == itemDataSource.count - 1 {
-                    totalContentWidth += itemModel.itemWidth + getContentEdgeInsetRight()
-                }else {
-                    totalContentWidth += itemModel.itemWidth + innerItemSpacing
-                }
+        for (index, itemModel) in itemDataSource.enumerated() {
+            itemModel.index = index
+            itemModel.itemWidth = (dataSource?.segmentedView(self, widthForItemAt: index) ?? 0)
+            if dataSource?.isItemWidthZoomEnabled == true {
+                itemModel.itemWidth *= itemModel.itemWidthCurrentZoomScale
             }
+            itemModel.isSelected = (index == selectedIndex)
+            totalItemWidth += itemModel.itemWidth
+            if index == itemDataSource.count - 1 {
+                totalContentWidth += itemModel.itemWidth + getContentEdgeInsetRight()
+            }else {
+                totalContentWidth += itemModel.itemWidth + innerItemSpacing
+            }
+        }
             
-            if dataSource?.isItemSpacingAverageEnabled == true && totalContentWidth < bounds.size.width {
-                var itemSpacingCount = itemDataSource.count - 1
-                var totalItemSpacingWidth = bounds.size.width - totalItemWidth
-                if contentEdgeInsetLeft == JXSegmentedViewAutomaticDimension {
-                    itemSpacingCount += 1
-                }else {
-                    totalItemSpacingWidth -= contentEdgeInsetLeft
-                }
-                if contentEdgeInsetRight == JXSegmentedViewAutomaticDimension {
-                    itemSpacingCount += 1
-                }else {
-                    totalItemSpacingWidth -= contentEdgeInsetRight
-                }
-                if itemSpacingCount > 0 {
-                    innerItemSpacing = totalItemSpacingWidth / CGFloat(itemSpacingCount)
-                }
+        if rowCount == 1, dataSource?.isItemSpacingAverageEnabled == true && totalContentWidth < bounds.size.width {
+            var itemSpacingCount = itemDataSource.count - 1
+            var totalItemSpacingWidth = bounds.size.width - totalItemWidth
+            if contentEdgeInsetLeft == JXSegmentedViewAutomaticDimension {
+                itemSpacingCount += 1
+            }else {
+                totalItemSpacingWidth -= contentEdgeInsetLeft
+            }
+            if contentEdgeInsetRight == JXSegmentedViewAutomaticDimension {
+                itemSpacingCount += 1
+            }else {
+                totalItemSpacingWidth -= contentEdgeInsetRight
+            }
+            if itemSpacingCount > 0 {
+                innerItemSpacing = totalItemSpacingWidth / CGFloat(itemSpacingCount)
             }
         }
 
