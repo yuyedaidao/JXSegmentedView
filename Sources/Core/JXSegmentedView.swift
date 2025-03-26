@@ -753,7 +753,8 @@ extension JXSegmentedView: UICollectionViewDelegateFlowLayout {
         }
     }
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        let rowCount = dataSource?.rowCount ?? 1
+        return rowCount == 1 ? innerItemSpacing : 0
     }
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
