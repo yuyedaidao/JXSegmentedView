@@ -313,59 +313,75 @@ open class JXSegmentedView: UIView, JXSegmentedViewRTLCompatible {
             defaultSelectedIndex = 0
             selectedIndex = 0
         }
-
+        let rowCount = dataSource?.rowCount ?? 1
         innerItemSpacing = dataSource?.itemSpacing ?? 0
         var totalItemWidth: CGFloat = 0
         var totalContentWidth: CGFloat = getContentEdgeInsetLeft()
-        for (index, itemModel) in itemDataSource.enumerated() {
-            itemModel.index = index
-            itemModel.itemWidth = (dataSource?.segmentedView(self, widthForItemAt: index) ?? 0)
-            if dataSource?.isItemWidthZoomEnabled == true {
-                itemModel.itemWidth *= itemModel.itemWidthCurrentZoomScale
+        if rowCount > 1 {
+            for (index, itemModel) in itemDataSource.enumerated() {
+                itemModel.index = index
+                itemModel.itemWidth = (dataSource?.segmentedView(self, widthForItemAt: index) ?? 0)
+                if dataSource?.isItemWidthZoomEnabled == true {
+                    itemModel.itemWidth *= itemModel.itemWidthCurrentZoomScale
+                }
+                itemModel.isSelected = (index == selectedIndex)
+                totalItemWidth += itemModel.itemWidth
+                if index == itemDataSource.count - 1 {
+                    totalContentWidth += itemModel.itemWidth + getContentEdgeInsetRight()
+                }else {
+                    totalContentWidth += itemModel.itemWidth + innerItemSpacing
+                }
             }
-            itemModel.isSelected = (index == selectedIndex)
-            totalItemWidth += itemModel.itemWidth
-            if index == itemDataSource.count - 1 {
-                totalContentWidth += itemModel.itemWidth + getContentEdgeInsetRight()
-            }else {
-                totalContentWidth += itemModel.itemWidth + innerItemSpacing
-            }
-        }
-
-        if dataSource?.isItemSpacingAverageEnabled == true && totalContentWidth < bounds.size.width {
-            var itemSpacingCount = itemDataSource.count - 1
-            var totalItemSpacingWidth = bounds.size.width - totalItemWidth
-            if contentEdgeInsetLeft == JXSegmentedViewAutomaticDimension {
-                itemSpacingCount += 1
-            }else {
-                totalItemSpacingWidth -= contentEdgeInsetLeft
-            }
-            if contentEdgeInsetRight == JXSegmentedViewAutomaticDimension {
-                itemSpacingCount += 1
-            }else {
-                totalItemSpacingWidth -= contentEdgeInsetRight
-            }
-            if itemSpacingCount > 0 {
-                innerItemSpacing = totalItemSpacingWidth / CGFloat(itemSpacingCount)
+            
+            if dataSource?.isItemSpacingAverageEnabled == true && totalContentWidth < bounds.size.width {
+                var itemSpacingCount = itemDataSource.count - 1
+                var totalItemSpacingWidth = bounds.size.width - totalItemWidth
+                if contentEdgeInsetLeft == JXSegmentedViewAutomaticDimension {
+                    itemSpacingCount += 1
+                }else {
+                    totalItemSpacingWidth -= contentEdgeInsetLeft
+                }
+                if contentEdgeInsetRight == JXSegmentedViewAutomaticDimension {
+                    itemSpacingCount += 1
+                }else {
+                    totalItemSpacingWidth -= contentEdgeInsetRight
+                }
+                if itemSpacingCount > 0 {
+                    innerItemSpacing = totalItemSpacingWidth / CGFloat(itemSpacingCount)
+                }
             }
         }
 
         var selectedItemFrameX = innerItemSpacing
         var selectedItemWidth: CGFloat = 0
         totalContentWidth = getContentEdgeInsetLeft()
+        var columnWidth: CGFloat = 0
+        var targetIndex = selectedIndex
+        // 如果是多行模式的话，需要调整targetIndex，targetIndex应该是selectedIndex所在列的最后一个item
+        if rowCount > 1 {
+            targetIndex = max(0, min(selectedIndex - selectedIndex % rowCount + rowCount - 1, itemDataSource.count - 1))
+        }
         for (index, itemModel) in itemDataSource.enumerated() {
-            if index < selectedIndex {
-                selectedItemFrameX += itemModel.itemWidth + innerItemSpacing
-            }else if index == selectedIndex {
-                selectedItemWidth = itemModel.itemWidth
+            let rowIndex = index % rowCount
+            if rowIndex == 0 {
+                columnWidth = itemModel.itemWidth
+            } else {
+                columnWidth = max(itemModel.itemWidth, columnWidth)
             }
-            if index == itemDataSource.count - 1 {
-                totalContentWidth += itemModel.itemWidth + getContentEdgeInsetRight()
-            }else {
-                totalContentWidth += itemModel.itemWidth + innerItemSpacing
+            // 确定选中item的宽度
+            if index == targetIndex {
+                selectedItemWidth = columnWidth
+            }
+            if rowIndex == rowCount - 1 || index == itemDataSource.count - 1 {
+                if index < targetIndex {
+                    selectedItemFrameX += columnWidth + innerItemSpacing
+                }
+                // 该列结束了，需要确认totalContentWidth
+                totalContentWidth += columnWidth + innerItemSpacing
             }
         }
 
+        totalContentWidth += getContentEdgeInsetRight()
         let minX: CGFloat = 0
         let maxX = totalContentWidth - bounds.size.width
         let targetX = selectedItemFrameX - bounds.size.width/2 + selectedItemWidth/2
@@ -411,6 +427,7 @@ open class JXSegmentedView: UIView, JXSegmentedViewRTLCompatible {
         collectionView.reloadData()
         collectionView.collectionViewLayout.invalidateLayout()
     }
+
 
     open func reloadItem(at index: Int) {
         guard index >= 0 && index < itemDataSource.count else {
