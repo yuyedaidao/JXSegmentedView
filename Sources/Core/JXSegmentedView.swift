@@ -317,7 +317,7 @@ open class JXSegmentedView: UIView, JXSegmentedViewRTLCompatible {
         innerItemSpacing = dataSource?.itemSpacing ?? 0
         var totalItemWidth: CGFloat = 0
         var totalContentWidth: CGFloat = getContentEdgeInsetLeft()
-        if rowCount > 1 {
+        if rowCount == 1 {
             for (index, itemModel) in itemDataSource.enumerated() {
                 itemModel.index = index
                 itemModel.itemWidth = (dataSource?.segmentedView(self, widthForItemAt: index) ?? 0)
