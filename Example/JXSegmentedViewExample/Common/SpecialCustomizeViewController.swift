@@ -84,6 +84,14 @@ class SpecialCustomizeViewController: UITableViewController {
             let vc = GridCellExampleViewController()
             vc.title = title
             navigationController?.pushViewController(vc, animated: true)
+        case "列表缓存":
+            let vc = ListCacheViewController()
+            vc.title = title
+            navigationController?.pushViewController(vc, animated: true)
+        case "垂直列表滚动切换分类":
+            let vc = VerticalListViewController()
+            vc.title = title
+            navigationController?.pushViewController(vc, animated: true)
         default: break
         }
     }
