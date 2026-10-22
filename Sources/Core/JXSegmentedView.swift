@@ -23,6 +23,7 @@ public enum JXSegmentedViewItemSelectedType {
     case scroll
 }
 
+@MainActor
 public protocol JXSegmentedViewListContainer {
     var defaultSelectedIndex: Int { set get }
     func contentScrollView() -> UIScrollView
@@ -30,7 +31,8 @@ public protocol JXSegmentedViewListContainer {
     func didClickSelectedItem(at index: Int)
 }
 
-public protocol JXSegmentedViewDataSource: AnyObject {
+@MainActor
+public protocol JXSegmentedViewDataSource: AnyObject, Sendable {
     var isItemWidthZoomEnabled: Bool { get }
     var selectedAnimationDuration: TimeInterval { get }
     var itemSpacing: CGFloat { get }
@@ -97,7 +99,8 @@ public protocol JXSegmentedViewDataSource: AnyObject {
 }
 
 /// 为什么会把选中代理分为三个，因为有时候只关心点击选中的，有时候只关心滚动选中的，有时候只关心选中。所以具体情况，使用对应方法。
-public protocol JXSegmentedViewDelegate: AnyObject {
+@MainActor
+public protocol JXSegmentedViewDelegate: AnyObject, Sendable {
     /// 即将选中事件。适用于在变化之前做一些数据改动
     ///
     /// - Parameters:

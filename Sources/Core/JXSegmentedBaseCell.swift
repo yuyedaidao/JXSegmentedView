@@ -10,12 +10,13 @@ import UIKit
 
 public typealias JXSegmentedCellSelectedAnimationClosure = (CGFloat)->()
 
+@MainActor
 open class JXSegmentedBaseCell: UICollectionViewCell, JXSegmentedViewRTLCompatible {
     open var itemModel: JXSegmentedBaseItemModel?
     open var animator: JXSegmentedAnimator?
     private var selectedAnimationClosureArray = [JXSegmentedCellSelectedAnimationClosure]()
 
-    deinit {
+    isolated deinit {
         animator?.stop()
     }
 

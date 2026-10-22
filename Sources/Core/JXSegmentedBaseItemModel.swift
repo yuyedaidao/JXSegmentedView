@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-open class JXSegmentedBaseItemModel {
+open class JXSegmentedBaseItemModel: @unchecked Sendable {
     open var index: Int = 0
     open var isSelected: Bool = false
     open var itemWidth: CGFloat = 0

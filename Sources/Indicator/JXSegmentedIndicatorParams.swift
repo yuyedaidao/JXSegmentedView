@@ -29,7 +29,7 @@ public struct JXSegmentedIndicatorSelectedParams {
     }
 }
 
-public struct JXSegmentedIndicatorTransitionParams {
+public struct JXSegmentedIndicatorTransitionParams: Sendable {
     public let currentSelectedIndex: Int
     public let leftIndex: Int
     public let leftItemFrame: CGRect

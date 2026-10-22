@@ -42,7 +42,7 @@ open class JXSegmentedBaseDataSource: JXSegmentedViewDataSource {
 
     private var animator: JXSegmentedAnimator?
 
-    deinit {
+    isolated deinit {
         animator?.stop()
         animator = nil
     }
